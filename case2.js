@@ -32,7 +32,7 @@ export default function () {
             page: '1',
         });
         
-    check(categoryRes, {
+    check(categoryPage, {
         'is status 200': (r) => r.status === 200,
     });
 
@@ -44,7 +44,7 @@ export default function () {
             number : '3',
         });
         
-    check(categoryRes, {
+    check(categoryPage, {
         'is status 302': (r) => r.status === 302,
     });
 
@@ -55,7 +55,7 @@ export default function () {
             page: '1',
         });
         
-    check(categoryRes, {
+    check(categoryPage, {
         'is status 200': (r) => r.status === 200,
     });
     
@@ -65,7 +65,7 @@ export default function () {
             page: '2',
         });
         
-    check(categoryRes, {
+    check(categoryPage, {
         'is status 200': (r) => r.status === 200,
     });
     
@@ -120,7 +120,7 @@ export default function () {
         orderitem_7: '24',
         productid: '47',
         orderitem_47: '1',
-        removeProduct_47: '' ,
+        removeProduct_47: '',
     });
     check(updateCartRes, {
         'is status 302': (r) => r.status === 302,
@@ -138,12 +138,12 @@ export default function () {
         orderitem_7: '24',
         proceedtoCheckout: 'Proceed to Checkout',
     });
-    check(updateCartRes, {
+    check(PurchaseCartRes, {
         'is status 302': (r) => r.status === 302,
     });
     
     let order = http.get('http://10.1.12.111:8080/tools.descartes.teastore.webui/order');
-    check(cartRes, {
+    check(order, {
         'is status 200': (r) => r.status === 200,
     });
     
@@ -157,7 +157,7 @@ export default function () {
     expirydate: '12/2025',
     confirm: 'Confirm',
     });
-    check(updateCartRes, {
+    check(ordersubmit, {
         'is status 302': (r) => r.status === 302,
     });
     
