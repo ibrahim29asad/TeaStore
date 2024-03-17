@@ -85,12 +85,12 @@ export default function () {
     });
     
    
-    let updateCartRes = http.post('http://10.1.12.111:8080/tools.descartes.teastore.webui/cartAction', {
+    let updatetheCartRes = http.post('http://10.1.12.111:8080/tools.descartes.teastore.webui/cartAction', {
         productid: '55',
         orderitem_7: '24',
         updateCartQuantities: 'Update Cart',
     });
-    check(updateCartRes, {
+    check(updatetheCartRes, {
         'is status 302': (r) => r.status === 302,
     });
 
@@ -133,12 +133,12 @@ export default function () {
     });
     
     
-    let PurchaseCartRes = http.post('http://10.1.12.111:8080/tools.descartes.teastore.webui/cartAction', {
+    let ProceedPurchaseCartRes = http.post('http://10.1.12.111:8080/tools.descartes.teastore.webui/cartAction', {
         productid: '55',
         orderitem_7: '24',
         proceedtoCheckout: 'Proceed to Checkout',
     });
-    check(PurchaseCartRes, {
+    check(ProceedPurchaseCartRes, {
         'is status 302': (r) => r.status === 302,
     });
     
