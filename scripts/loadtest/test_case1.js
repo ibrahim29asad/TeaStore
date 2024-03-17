@@ -1,87 +1,148 @@
-import { group, sleep } from 'k6';
 import http from 'k6/http';
+import { group, sleep } from 'k6';
 
-const BASE_URL = 'http://10.1.12.111:8080/tools.descartes.teastore.webui';
+const BASE_URL = `http://${__ENV.HOST || 'localhost'}:8080/tools.descartes.teastore.webui`;
+
+const groupResponseTimes = {};
 
 export const options = {
-    stages: [
-        { duration: '60s', target: 20 },  // ramp up to 20 users over 60 seconds
-        { duration: '120s', target: 20 }, // maintain 20 users for 120 seconds
-        { duration: '60s', target: 0 },   // ramp down to 0 users over 60 seconds
-    ],
+    discardResponseBodies: true,
+    scenarios: {
+        stressTest: {
+            executor: 'ramping-arrival-rate',
+
+            // Start `startRate` iterations per second
+            timeUnit: '1s',
+
+            // Pre-allocate necessary VUs.
+            preAllocatedVUs: 100,
+
+            stages: [
+
+                { target: 10, duration: '40s' },
+
+                { target: 80, duration: '20s' },
+
+                { target: 10, duration: '40s' },
+
+                { target: 100, duration: '20s' },
+
+                { target: 10, duration: '20s' },
+            ],
+        },
+    },
 };
 
 export default function () {
+    group('TeaStore Homepage', () => {
+        getTeaStoreHomepage();
+    });
+    group('TeaStore Login', () => {
+        getLogin();
+    });
+
     group('TeaStore Login Action', () => {
         const loginActionPayload = {
-            "referer": `${BASE_URL}/login`,
+            "referer": "http://10.1.12.111:8080/tools.descartes.teastore.webui/",
+            "username": "user",
+            "password": "password",
+            "signin": "Sign in",
+        };
+
+        postLoginAction(loginActionPayload);
+    });
+
+    group('TeaStore Login', () => {
+        getLogin();
+    });
+
+    group('TeaStore Login Action', () => {
+        const loginActionPayload = {
+            "referer": "http://10.1.12.111:8080/tools.descartes.teastore.webui/",
             "username": "user2",
             "password": "password",
             "signin": "Sign in",
         };
+
         postLoginAction(loginActionPayload);
     });
-
     group('TeaStore Homepage', () => {
         getTeaStoreHomepage();
     });
-
-    group('TeaStore Category Browse', () => {
-        getTeaStoreProductBrowse("2");
+    group('TeaStore Herbal Tea Browse', () => {
+        getTeaStoreProductBrowse("4");
     });
-
-    group('TeaStore Add to Cart', () => {
-        const cartActionPayload = {
-            "productid": "7",
-            "addToCart": "Add to Cart",
+    group('TeaStore Rooibos Tea Browse', () => {
+        getTeaStoreProductBrowse("5");
+    });
+    group('TeaStore White Tea Browse', () => {
+        getTeaStoreProductBrowse("6");
+    });
+    group('TeaStore View Profile', () => {
+        const start = new Date();
+        http.get(`${BASE_URL}/profile`);
+        const end = new Date();
+        const duration = end - start;
+        groupResponseTimes['TeaStore View Profile'] = (groupResponseTimes['TeaStore View Profile'] || 0) + duration;
+        sleep(1);
+    });
+    group('TeaStore Login Action', () => {
+        const loginActionPayload = {
+            "logout": "",
         };
-        postCartAction(cartActionPayload);
-    });
 
-    group('TeaStore View Cart', () => {
-        getTeaStoreViewCart();
+        postLoginAction(loginActionPayload);
     });
-
-    group('TeaStore Update Cart', () => {
-        const updateCartPayload = {
-            "productid": "7",
-            "orderitem_7": "2",
-            "updateCartQuantities": "Update Cart"
-        };
-        postUpdateCartAction(updateCartPayload);
+    group('TeaStore Homepage', () => {
+        getTeaStoreHomepage();
     });
+}
 
-    // Simulates user reading time etc.
+export function handleSummary() {
+    console.log("\nResponse times by group:");
+    for (const groupName in groupResponseTimes) {
+        console.log(`   ${groupName}: ${groupResponseTimes[groupName]} ms`);
+    }
+}
+
+
+// ! Helper Functions for the Login Action
+const getTeaStoreHomepage = () => {
+    const start = new Date();
+    http.get(`${BASE_URL}/`);
+    const end = new Date();
+    const duration = end - start;
+    groupResponseTimes['TeaStore Homepage'] = (groupResponseTimes['TeaStore Homepage'] || 0) + duration;
+}
+
+const postLoginAction = (payload) => {
+    const start = new Date();
+
+    http.post(`${BASE_URL}/loginAction`, payload, {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    }
+    );
+
+    const end = new Date();
+    const duration = end - start;
+    groupResponseTimes['TeaStore CRUD Login'] = (groupResponseTimes['TeaStore CRUD Login'] || 0) + duration;
+    // sleep(1); Instant
+}
+
+const getLogin = () => {
+    const start = new Date();
+    http.get(`${BASE_URL}/login`);
+    const end = new Date();
+    const duration = end - start;
+    groupResponseTimes['TeaStore Login'] = (groupResponseTimes['TeaStore Login'] || 0) + duration;
     sleep(1);
 }
 
-// Helper functions for making HTTP requests
-function postLoginAction(payload) {
-    http.post(`${BASE_URL}/loginAction`, payload, {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    });
-}
-
-function getTeaStoreHomepage() {
-    http.get(`${BASE_URL}/`);
-}
-
-function getTeaStoreProductBrowse(categoryNumber) {
+const getTeaStoreProductBrowse = (categoryNumber) => {
+    const start = new Date();
     http.get(`${BASE_URL}/category?category=${categoryNumber}&page=1`);
-}
-
-function postCartAction(payload) {
-    http.post(`${BASE_URL}/cartAction`, payload, {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    });
-}
-
-function getTeaStoreViewCart() {
-    http.get(`${BASE_URL}/cart`);
-}
-
-function postUpdateCartAction(payload) {
-    http.post(`${BASE_URL}/cartAction`, payload, {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    });
+    const end = new Date();
+    const duration = end - start;
+    groupResponseTimes['TeaStore Product Browse'] = (groupResponseTimes['TeaStore Product Browse'] || 0) + duration;
+    sleep(1);
 }
