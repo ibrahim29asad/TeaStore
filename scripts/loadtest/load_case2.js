@@ -6,9 +6,9 @@ import http from 'k6/http';
 
 export let options = {
     stages: [
-        { duration: '10s', target: 20 },  // Ramp-up to 20 users over 10 seconds
-        { duration: '10s', target: 20 }, // Ramp-up to 20 users over next 10 seconds
-	    { duration: '5s', target: 0 },   // Stay at 0 users for 5 seconds
+        { duration: '60s', target: 20 },  // ramp up to 20 users over 60 seconds
+        { duration: '120s', target: 20 }, // maintain 20 users for 120 seconds
+        { duration: '60s', target: 0 },   // ramp down to 0 users over 60 seconds
     ],
 //    vus: 1,
 //    duration: '300s',
