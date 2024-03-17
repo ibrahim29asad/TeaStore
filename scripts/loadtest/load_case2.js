@@ -2,9 +2,9 @@
 import { group, sleep } from 'k6';
 import http from 'k6/http';
 
-const BASE_URL = 'http://10.1.12.111:8080/tools.descartes.teastore.webui';
 
-export const options = {
+
+export let options = {
     stages: [
         { duration: '60s', target: 20 },  // ramp up to 20 users over 60 seconds
         { duration: '120s', target: 20 }, // maintain 20 users for 120 seconds
