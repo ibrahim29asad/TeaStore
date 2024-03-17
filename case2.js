@@ -120,7 +120,7 @@ export default function () {
         orderitem_7: '24',
         productid: '47',
         orderitem_47: '1',
-        removeProduct_47: ,
+        removeProduct_47: '' ,
     });
     check(updateCartRes, {
         'is status 302': (r) => r.status === 302,
