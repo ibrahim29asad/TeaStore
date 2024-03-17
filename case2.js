@@ -49,13 +49,13 @@ export default function () {
     });
 
     
-    let categoryPage =
+    let NewcategoryPage =
         http.get('http://10.1.12.111:8080/tools.descartes.teastore.webui/category?category=2&page=1', {
             category: '2',
             page: '1',
         });
         
-    check(categoryPage, {
+    check(NewcategoryPage, {
         'is status 200': (r) => r.status === 200,
     });
     
