@@ -37,14 +37,14 @@ export default function () {
     });
 
     
-    let categoryPage =
+    let ChangecategoryPage =
         http.post('http://10.1.12.111:8080/tools.descartes.teastore.webui/category?category=2&page=1', {
             category: '2',
             page: '1',
             number : '3',
         });
         
-    check(categoryPage, {
+    check(ChangecategoryPage, {
         'is status 302': (r) => r.status === 302,
     });
 
@@ -59,13 +59,13 @@ export default function () {
         'is status 200': (r) => r.status === 200,
     });
     
-    let categoryPage =
+    let NextcategoryPage =
         http.get('http://10.1.12.111:8080/tools.descartes.teastore.webui/category?category=2&page=2', {
             category: '2',
             page: '2',
         });
         
-    check(categoryPage, {
+    check(NextcategoryPage, {
         'is status 200': (r) => r.status === 200,
     });
     
