@@ -94,8 +94,8 @@ export default function () {
         'is status 302': (r) => r.status === 302,
     });
 
-    let cartRes = http.get('http://10.1.12.111:8080/tools.descartes.teastore.webui/cart');
-    check(cartRes, {
+    let cartRes1 = http.get('http://10.1.12.111:8080/tools.descartes.teastore.webui/cart');
+    check(cartRes1, {
         'is status 200': (r) => r.status === 200,
     });
 
@@ -109,8 +109,8 @@ export default function () {
     });
     
     
-    let cartRes = http.get('http://10.1.12.111:8080/tools.descartes.teastore.webui/cart');
-    check(cartRes, {
+    let cartRes2 = http.get('http://10.1.12.111:8080/tools.descartes.teastore.webui/cart');
+    check(cartRes2, {
         'is status 200': (r) => r.status === 200,
     });
     
@@ -127,8 +127,8 @@ export default function () {
     });
     
     
-    let cartRes = http.get('http://10.1.12.111:8080/tools.descartes.teastore.webui/cart');
-    check(cartRes, {
+    let cartRes3 = http.get('http://10.1.12.111:8080/tools.descartes.teastore.webui/cart');
+    check(cartRes3, {
         'is status 200': (r) => r.status === 200,
     });
     
